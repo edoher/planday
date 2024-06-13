@@ -1,11 +1,15 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from './api';
+import { GridElement } from './types';
+import Grid from './Grid';
 
 const App = () => {
+    const [elements, setElements] = useState<GridElement[]>([]);
+
     const fetchData = useCallback(async () => {
         const response = await api({});
 
-        console.log(response);
+        setElements(response);
     }, []);
 
     useEffect(() => {
@@ -14,7 +18,7 @@ const App = () => {
 
     return (
         <div className="container">
-            <h1 className="text-3xl font-bold">Hello world!</h1>
+            {elements.length > 0 && <Grid elements={elements} />}
         </div>
     );
 };
