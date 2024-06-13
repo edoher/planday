@@ -14,6 +14,13 @@ const App = () => {
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(5);
 
+    /**
+     * New grid element
+     */
+    const emptyNew: GridElement = { title: '', description: '', imagePath: '' };
+    const [newElement, setNewElement] = useState<GridElement>(emptyNew);
+    const [customElements, setCustomElements] = useState<GridElement[]>([]);
+
     const fetchData = useCallback(async () => {
         const { data, count } = await api({
             search: search,
@@ -24,6 +31,26 @@ const App = () => {
         setElements(data);
         setElementCount(count);
     }, [search, page, perPage]);
+
+    const editNew = useCallback(
+        (prop: string, value: string) => {
+            const newVersion = { ...newElement, [prop]: value };
+
+            setNewElement(newVersion);
+        },
+        [newElement]
+    );
+
+    const createNew = useCallback(() => {
+        const { title, description, imagePath } = newElement;
+
+        if (!title || !description || !imagePath) {
+            return;
+        }
+
+        setCustomElements([...customElements, newElement]);
+        setNewElement(emptyNew);
+    }, [newElement, customElements]);
 
     useEffect(() => {
         fetchData();
@@ -61,6 +88,7 @@ const App = () => {
                     <label htmlFor="pageSelect">Page</label>
                     <select
                         id="pageSelect"
+                        className="ml-2"
                         tabIndex={0}
                         value={page}
                         onChange={(
@@ -79,6 +107,7 @@ const App = () => {
                     <label htmlFor="perPageSelect">Elements per page</label>
                     <select
                         id="perPageSelect"
+                        className="ml-2"
                         tabIndex={0}
                         value={perPage}
                         onChange={(
@@ -97,6 +126,63 @@ const App = () => {
             ) : (
                 <NoElements />
             )}
+
+            <h2 className="font-bold text-2xl text-center mt-10">
+                Create new elements!
+            </h2>
+
+            <div className="create-new flex justify-center gap-6 p-6">
+                <div>
+                    <label htmlFor={'field-title'}>Title</label>
+                    <input
+                        id={'field-title'}
+                        className="border mt-1 block"
+                        tabIndex={0}
+                        value={newElement.title}
+                        type="text"
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => editNew('title', event.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor={'field-description'}>Description</label>
+                    <input
+                        id={'field-description'}
+                        className="border mt-1 block"
+                        tabIndex={0}
+                        value={newElement.description}
+                        type="text"
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => editNew('description', event.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor={'field-image'}>Image path</label>
+                    <input
+                        id={'field-image'}
+                        className="border mt-1 block"
+                        tabIndex={0}
+                        value={newElement.imagePath}
+                        type="text"
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => editNew('imagePath', event.target.value)}
+                    />
+                </div>
+                <div className="flex items-center">
+                    <button
+                        className="border rounded-md bg-blue-700 px-2 py-1 text-white"
+                        type="button"
+                        onClick={() => createNew()}
+                    >
+                        Create!
+                    </button>
+                </div>
+            </div>
+
+            {customElements.length > 0 && <Grid elements={customElements} />}
         </div>
     );
 };
