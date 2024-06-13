@@ -15,3 +15,9 @@ Then simply just run and use the url provided by Vite in the output
 ```js
 npm run dev
 ```
+
+And to run tests, just run
+
+```js
+npm run test
+```
