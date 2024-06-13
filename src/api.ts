@@ -1,8 +1,6 @@
-import { ApiRequest, ApiResponse } from './types';
+import { ApiRequest, ApiResponse, GridElement } from './types';
 
-const api = async (options: ApiRequest): Promise<ApiResponse> => {
-    console.log(options);
-
+const api = async ({ page, per_page }: ApiRequest): Promise<ApiResponse> => {
     const dataFetch = await fetch('/data.json', {
         headers: {
             'Content-Type': 'application/json',
@@ -10,9 +8,19 @@ const api = async (options: ApiRequest): Promise<ApiResponse> => {
         },
     });
 
-    const data: ApiResponse = await dataFetch.json();
+    const data: GridElement[] = await dataFetch.json();
+    const count = data.length;
 
-    return data;
+    let processedData: GridElement[] = [];
+
+    if (page && per_page) {
+        const start = page * per_page - 1;
+        const end = start + per_page;
+
+        processedData = data.slice(start, end);
+    }
+
+    return { data: processedData, count };
 };
 
 export default api;

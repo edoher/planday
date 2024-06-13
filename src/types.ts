@@ -5,7 +5,8 @@ export type GridElement = {
 };
 
 export type ApiRequest = {
+    page?: number;
     per_page?: number;
 };
 
-export type ApiResponse = GridElement[];
+export type ApiResponse = { count: number; data: GridElement[] };
