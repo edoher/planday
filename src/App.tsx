@@ -61,6 +61,7 @@ const App = () => {
 
     /**
      * Initial app data fetch
+     * (and subsequent when the fetch function changes)
      */
     useEffect(() => {
         fetchData();
@@ -122,7 +123,12 @@ const App = () => {
                         value={perPage}
                         onChange={(
                             event: React.ChangeEvent<HTMLSelectElement>
-                        ) => setPerPage(Number(event.target.value))}
+                        ) => {
+                            setPerPage(Number(event.target.value));
+
+                            // Avoid error when changing page size, as this page might not exist anymore
+                            setPage(1);
+                        }}
                     >
                         <option>2</option>
                         <option>5</option>
