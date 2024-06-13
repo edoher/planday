@@ -4,8 +4,27 @@ import api from './api';
 
 vi.mock('./api');
 
-describe('App', () => {
-    it('renders the App component', async () => {
+describe('Basic App test', () => {
+    beforeEach(() => {
+        vi.mocked(api).mockResolvedValue({
+            data: [],
+            count: 0,
+        });
+
+        render(<App />);
+    });
+
+    it('Initially renders the App component', async () => {
+        await waitFor(async () => {
+            expect(
+                await screen.findByText('Create new elements!')
+            ).toBeTruthy();
+        });
+    });
+});
+
+describe('Checks for App details', () => {
+    beforeEach(() => {
         vi.mocked(api).mockResolvedValue({
             data: [
                 {
@@ -13,15 +32,28 @@ describe('App', () => {
                     description: 'We believe',
                     imagePath: 'sample',
                 },
+                {
+                    title: 'Avengers',
+                    description: 'Avengers',
+                    imagePath: 'sample',
+                },
+                {
+                    title: 'Yes',
+                    description: 'Yes',
+                    imagePath: 'sample',
+                },
             ],
-            count: 1,
+            count: 10,
         });
+    });
 
-        render(<App />);
+    it('Renders 3 elements', async () => {
+        const { container } = render(<App />);
 
-        await waitFor(() => {
-            expect(screen.queryByText('We believe')).not.toBeUndefined(),
-                screen.debug(); // prints out the jsx in the App component unto the command line
+        await waitFor(async () => {
+            expect(
+                container.getElementsByClassName('grid-element').length
+            ).toBe(3);
         });
     });
 });
