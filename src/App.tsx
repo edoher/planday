@@ -41,11 +41,12 @@ const App = () => {
 
     return (
         <div className="container">
-            <div className="pagination-and-search">
+            <div className="pagination-and-search flex justify-center gap-6 p-6">
                 <div>
                     <label htmlFor="searchBox">Search</label>
                     <input
                         id="searchBox"
+                        className="border ml-2"
                         tabIndex={0}
                         value={search}
                         type="text"
@@ -59,7 +60,7 @@ const App = () => {
                     <label htmlFor="pageSelect">Page</label>
                     <select
                         id="pageSelect"
-                        tabIndex={1}
+                        tabIndex={0}
                         value={page}
                         onChange={(
                             event: React.ChangeEvent<HTMLSelectElement>
@@ -77,7 +78,7 @@ const App = () => {
                     <label htmlFor="perPageSelect">Elements per page</label>
                     <select
                         id="perPageSelect"
-                        tabIndex={2}
+                        tabIndex={0}
                         value={perPage}
                         onChange={(
                             event: React.ChangeEvent<HTMLSelectElement>
