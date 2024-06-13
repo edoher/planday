@@ -5,6 +5,7 @@ export type GridElement = {
 };
 
 export type ApiRequest = {
+    search?: string;
     page?: number;
     per_page?: number;
 };

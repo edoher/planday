@@ -9,15 +9,20 @@ const App = () => {
     /**
      * Query options
      */
+    const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(5);
 
     const fetchData = useCallback(async () => {
-        const { data, count } = await api({ page: page, per_page: perPage });
+        const { data, count } = await api({
+            search: search,
+            page: page,
+            per_page: perPage,
+        });
 
         setElements(data);
         setElementCount(count);
-    }, [page, perPage]);
+    }, [search, page, perPage]);
 
     useEffect(() => {
         fetchData();
@@ -36,7 +41,20 @@ const App = () => {
 
     return (
         <div className="container">
-            <div className="pagination">
+            <div className="pagination-and-search">
+                <div>
+                    <label htmlFor="searchBox">Search</label>
+                    <input
+                        id="searchBox"
+                        tabIndex={0}
+                        value={search}
+                        type="text"
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => setSearch(event.target.value)}
+                    />
+                </div>
+
                 <div>
                     <label htmlFor="pageSelect">Page</label>
                     <select

@@ -1,6 +1,10 @@
 import { ApiRequest, ApiResponse, GridElement } from './types';
 
-const api = async ({ page, per_page }: ApiRequest): Promise<ApiResponse> => {
+const api = async ({
+    search,
+    page,
+    per_page,
+}: ApiRequest): Promise<ApiResponse> => {
     const dataFetch = await fetch('/data.json', {
         headers: {
             'Content-Type': 'application/json',
@@ -9,15 +13,25 @@ const api = async ({ page, per_page }: ApiRequest): Promise<ApiResponse> => {
     });
 
     const data: GridElement[] = await dataFetch.json();
-    const count = data.length;
+    let count = data.length;
 
-    let processedData: GridElement[] = [];
+    let processedData = data;
+
+    if (search) {
+        const searchRegex = new RegExp(search, 'i');
+
+        processedData = processedData.filter((element) =>
+            searchRegex.test(element.title)
+        );
+
+        count = processedData.length;
+    }
 
     if (page && per_page) {
         const start = page === 1 ? 0 : (page - 1) * per_page;
         const end = start + per_page;
 
-        processedData = data.slice(start, end);
+        processedData = processedData.slice(start, end);
     }
 
     return { data: processedData, count };
