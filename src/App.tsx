@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import api from './api';
 import { GridElement } from './types';
 import Grid from './Grid';
@@ -17,7 +17,14 @@ const App = () => {
     /**
      * New grid element
      */
-    const emptyNew: GridElement = { title: '', description: '', imagePath: '' };
+    const emptyNew: GridElement = useMemo(
+        () => ({
+            title: '',
+            description: '',
+            imagePath: '',
+        }),
+        []
+    );
     const [newElement, setNewElement] = useState<GridElement>(emptyNew);
     const [customElements, setCustomElements] = useState<GridElement[]>([]);
 
@@ -50,8 +57,11 @@ const App = () => {
 
         setCustomElements([...customElements, newElement]);
         setNewElement(emptyNew);
-    }, [newElement, customElements]);
+    }, [newElement, customElements, emptyNew]);
 
+    /**
+     * Initial app data fetch
+     */
     useEffect(() => {
         fetchData();
     }, [fetchData]);
@@ -173,8 +183,13 @@ const App = () => {
                 </div>
                 <div className="flex items-center">
                     <button
-                        className="border rounded-md bg-blue-700 px-2 py-1 text-white"
+                        className="border rounded-md bg-blue-700 disabled:bg-gray-400 px-2 py-1 text-white"
                         type="button"
+                        disabled={
+                            !newElement.title ||
+                            !newElement.description ||
+                            !newElement.imagePath
+                        }
                         onClick={() => createNew()}
                     >
                         Create!
