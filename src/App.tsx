@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import api from './api';
 import { GridElement } from './types';
 import Grid from './Grid';
+import NoElements from './NoElements';
 
 const App = () => {
     const [elements, setElements] = useState<GridElement[]>([]);
@@ -91,7 +92,11 @@ const App = () => {
                 </div>
             </div>
 
-            {elements.length > 0 && <Grid elements={elements} />}
+            {elements.length > 0 ? (
+                <Grid elements={elements} />
+            ) : (
+                <NoElements />
+            )}
         </div>
     );
 };
